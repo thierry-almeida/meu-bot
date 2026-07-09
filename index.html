@@ -1,77 +1,859 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meu Bot</title>
+<title>Fechamento do Dia · Valorize</title>
+<script src="https://www.google.com/recaptcha/api.js?render=6Lfzf0stAAAAAHUrUvez7njP4kQ_RIY0DombQrUP"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12161B;
+    --surface:#1B222A;
+    --surface-2:#212A33;
+    --line:#2C3640;
+    --text:#EDEFF2;
+    --muted:#8B96A3;
+    --teal:#33A793;
+    --teal-dim:#1F5E54;
+    --amber:#E3A542;
+    --red:#DA6459;
+    --disp:'Space Grotesk',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+    --body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 20% -10%, rgba(51,167,147,0.08), transparent),
+      var(--ink);
+    color:var(--text);
+    font-family:var(--body);
+    min-height:100vh;
+    padding:32px 16px 80px;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
 
-<link rel="stylesheet" href="style.css">
+  /* header / ticker */
+  header{margin-bottom:28px;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:var(--disp);
+    font-size:clamp(26px,4vw,34px);
+    font-weight:700;
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{color:var(--muted);font-size:14px;margin:0 0 18px;}
+  .date-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .date-row input[type=date]{
+    background:var(--surface);
+    border:1px solid var(--line);
+    color:var(--text);
+    font-family:var(--mono);
+    font-size:14px;
+    padding:8px 10px;
+    border-radius:8px;
+  }
+  .name-row{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;}
+  .name-row label{font-size:13px;color:var(--muted);white-space:nowrap;}
+  .name-row input[type=text]{
+    flex:1;
+    min-width:180px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    color:var(--text);
+    font-family:var(--body);
+    font-size:14px;
+    padding:8px 12px;
+    border-radius:8px;
+  }
+  .name-row input[type=text]:focus{outline:none;border-color:var(--teal);}
 
+  /* pendencia groups */
+  .pend-group{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:10px;
+  }
+  .pend-group-head{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .pend-group-head input[type=text]{
+    flex:1;
+    background:var(--surface);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:8px;
+    padding:8px 10px;
+    font-size:13px;
+    font-family:var(--body);
+    font-weight:600;
+  }
+  .pend-group-head input[type=text]:focus{outline:none;border-color:var(--teal);}
+  .pend-remove{
+    background:none;
+    border:1px solid var(--line);
+    color:var(--muted);
+    border-radius:8px;
+    width:32px;height:32px;
+    flex-shrink:0;
+    cursor:pointer;
+    font-size:14px;
+  }
+  .pend-remove:hover{border-color:var(--red);color:var(--red);}
+  .add-group-btn{
+    width:100%;
+    background:transparent;
+    border:1px dashed var(--line);
+    color:var(--muted);
+    border-radius:10px;
+    padding:10px;
+    font-size:13px;
+    font-family:var(--body);
+    cursor:pointer;
+    margin-top:4px;
+  }
+  .add-group-btn:hover{border-color:var(--teal);color:var(--teal);}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 20px 22px;
+    margin-bottom:16px;
+  }
+  .card h2{
+    font-family:var(--disp);
+    font-size:15px;
+    font-weight:600;
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .card h2 .n{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    border:1px solid var(--line);
+    border-radius:5px;
+    padding:1px 6px;
+  }
+
+  /* counters grid - ledger tape */
+  .counters{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:10px;
+  }
+  .counter{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 12px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    min-width:0;
+  }
+  .counter .label{
+    display:flex;align-items:flex-start;gap:8px;
+    font-size:12.5px;line-height:1.35;color:var(--text);
+    min-height:32px;
+  }
+  .counter .label .emoji{font-size:16px;flex-shrink:0;}
+  .stepper{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+  .stepper button{
+    width:28px;height:28px;
+    flex-shrink:0;
+    border-radius:7px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--text);
+    font-family:var(--mono);
+    font-size:15px;
+    cursor:pointer;
+    line-height:1;
+  }
+  .stepper button:hover{border-color:var(--teal);color:var(--teal);}
+  .stepper input{
+    flex:1;
+    min-width:0;
+    width:auto;
+    text-align:center;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:5px 0;
+    color:var(--text);
+    font-family:var(--mono);
+    font-size:15px;
+    font-weight:600;
+  }
+  .stepper input:focus{outline:none;border-color:var(--teal);}
+
+  /* dynamic lists (turmas / pendencias) */
+  .group-title{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--teal);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin:14px 0 8px;
+  }
+  .group-title:first-child{margin-top:0;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+  .chip{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 8px 6px 12px;
+    font-size:13px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .chip button{
+    background:none;border:none;color:var(--muted);
+    cursor:pointer;font-size:14px;line-height:1;padding:2px;
+  }
+  .chip button:hover{color:var(--red);}
+  .add-row{display:flex;gap:8px;}
+  .add-row input{
+    flex:1;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:8px;
+    padding:9px 12px;
+    font-size:13px;
+    font-family:var(--body);
+  }
+  .add-row input:focus{outline:none;border-color:var(--teal);}
+  .add-row button{
+    background:var(--teal-dim);
+    border:1px solid var(--teal);
+    color:#CFF3EC;
+    border-radius:8px;
+    padding:0 14px;
+    font-size:13px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .add-row button:hover{background:var(--teal);color:#08211D;}
+
+  textarea{
+    width:100%;
+    min-height:70px;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:10px;
+    padding:12px;
+    font-family:var(--body);
+    font-size:14px;
+    resize:vertical;
+  }
+  textarea:focus{outline:none;border-color:var(--teal);}
+
+  /* preview */
+  .preview{
+    background:#0E1319;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    line-height:1.65;
+    white-space:pre-wrap;
+    color:#C7D0D9;
+    max-height:340px;
+    overflow-y:auto;
+  }
+  .preview strong{color:#fff;}
+
+  /* settings */
+  details.settings{
+    border:1px dashed var(--line);
+    border-radius:12px;
+    padding:2px 16px;
+    margin-bottom:16px;
+    color:var(--muted);
+  }
+  details.settings summary{
+    cursor:pointer;
+    padding:12px 0;
+    font-size:13px;
+    font-family:var(--mono);
+    color:var(--muted);
+    list-style:none;
+  }
+  details.settings summary::-webkit-details-marker{display:none;}
+  details.settings[open] summary{color:var(--teal);}
+  .settings-body{padding-bottom:14px;}
+  .settings-body input{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:8px;
+    padding:9px 12px;
+    font-size:13px;
+    font-family:var(--mono);
+  }
+  .settings-body p{font-size:12px;margin:8px 0 0;}
+
+  .history-entry{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+    margin-bottom:8px;
+    background:var(--surface);
+  }
+  .history-entry summary{
+    cursor:pointer;
+    font-size:13px;
+    color:var(--text);
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    list-style:none;
+  }
+  .history-entry summary::-webkit-details-marker{display:none;}
+  .history-entry .meta{color:var(--muted);font-family:var(--mono);font-size:11.5px;}
+  .history-entry pre{
+    white-space:pre-wrap;
+    font-family:var(--mono);
+    font-size:12px;
+    color:#C7D0D9;
+    margin:10px 0 0;
+    padding-top:10px;
+    border-top:1px solid var(--line);
+  }
+
+  /* footer actions */
+  .actions{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    flex-wrap:wrap;
+  }
+  .btn-primary, .btn-secondary{
+    flex:1;
+    min-width:160px;
+    padding:14px 18px;
+    border-radius:12px;
+    font-family:var(--disp);
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    border:1px solid transparent;
+  }
+  .btn-primary{
+    background:var(--teal);
+    color:#052620;
+    box-shadow:0 6px 20px rgba(51,167,147,0.25);
+  }
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-primary:disabled{opacity:.5;cursor:wait;filter:none;}
+  .btn-secondary{
+    background:transparent;
+    border-color:var(--line);
+    color:var(--text);
+  }
+  .btn-secondary:hover{border-color:var(--muted);}
+
+  .toast{
+    margin-top:12px;
+    font-size:13px;
+    font-family:var(--mono);
+    padding:10px 12px;
+    border-radius:8px;
+    display:none;
+  }
+  .toast.ok{display:block;background:rgba(51,167,147,0.12);color:#8FE3D3;border:1px solid var(--teal-dim);}
+  .toast.err{display:block;background:rgba(218,100,89,0.12);color:#FFC2BA;border:1px solid var(--red);}
+
+  @media(max-width:480px){
+    .actions{flex-direction:column;}
+  }
+</style>
 </head>
-
 <body>
+<div class="wrap">
 
-<nav>
+  <header>
+    <p class="eyebrow">Instituto Valorize · Cobrança</p>
+    <h1>Fechamento do dia</h1>
+    <p class="subtitle">Preencha os campos abaixo. Ao enviar, o relatório cai formatado no Discord da equipe.</p>
+    <div class="date-row">
+      <span style="font-size:20px;">📊</span>
+      <input type="date" id="reportDate">
+    </div>
+    <div class="name-row">
+      <label for="responsavelNome">👤 Seu nome</label>
+      <input type="text" id="responsavelNome" placeholder="Quem está enviando o fechamento?" maxlength="60">
+    </div>
+  </header>
 
-<h2>🤖 Meu Bot</h2>
+  <div class="card">
+    <h2><span>📈</span> Números do dia <span class="n">7 campos</span></h2>
+    <div class="counters" id="counters"></div>
+  </div>
 
-<div>
+  <div class="card">
+    <h2><span>🎓</span> Turmas atendidas</h2>
+    <div class="group-title">Ensino Digital</div>
+    <div class="chips" id="chips-digital"></div>
+    <div class="add-row">
+      <input type="text" id="input-digital" placeholder="Ex: Endurance 5" maxlength="60">
+      <button type="button" onclick="addItem('digital')">Adicionar</button>
+    </div>
 
-<a href="index.html">Início</a>
-<a href="privacy.html">Privacidade</a>
-<a href="terms.html">Termos</a>
+    <div class="group-title" style="margin-top:16px;">Ensino Presencial</div>
+    <div class="chips" id="chips-presencial"></div>
+    <div class="add-row">
+      <input type="text" id="input-presencial" placeholder="Ex: BH Natação" maxlength="60">
+      <button type="button" onclick="addItem('presencial')">Adicionar</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span>📝</span> Observações</h2>
+    <textarea id="observacoes" placeholder="Sem observações."></textarea>
+  </div>
+
+  <div class="card">
+    <h2><span>⏳</span> Pendências</h2>
+    <div id="pendGroups"></div>
+    <button type="button" class="add-group-btn" onclick="addPendGroup()">+ Adicionar outro tipo de pendência</button>
+  </div>
+
+  <div class="card">
+    <h2><span>👀</span> Pré-visualização</h2>
+    <div class="preview" id="preview"></div>
+  </div>
+
+  <div class="card" style="display:flex;align-items:center;gap:10px;background:var(--surface-2);border-style:dashed;">
+    <span style="font-size:16px;">🔗</span>
+    <span style="font-size:13px;color:var(--muted);">Conectado ao canal de fechamento do Discord.</span>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" id="sendBtn" onclick="sendReport()">Enviar relatório</button>
+    <button class="btn-secondary" onclick="copyReport()">Copiar texto</button>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <details class="settings" id="historyPanel">
+    <summary>📜 Ver histórico de relatórios</summary>
+    <div class="settings-body">
+      <div class="add-row" style="margin-bottom:10px;">
+        <input type="password" id="historyPin" placeholder="PIN de acesso" autocapitalize="off" autocorrect="off" maxlength="20">
+        <button type="button" onclick="loadHistory()">Ver</button>
+      </div>
+      <div id="historyList" style="color:var(--muted);font-size:13px;"></div>
+    </div>
+  </details>
 
 </div>
 
-</nav>
+<script>
+const COUNTERS = [
+  {key:'enviadas', label:'Mensagens enviadas (ativos)', emoji:'📤'},
+  {key:'retornos', label:'Retornos', emoji:'💬'},
+  {key:'acordos', label:'Acordos realizados', emoji:'🤝'},
+  {key:'boletos', label:'Boletos enviados', emoji:'📄'},
+  {key:'pagamentos', label:'Pagamentos realizados', emoji:'💳'},
+  {key:'erros', label:'Mensagens com erro', emoji:'⚠️'},
+  {key:'cancelamentos', label:'Cancelamentos', emoji:'❌'},
+];
 
-<header>
+let pendGroupSeq = 0;
+function newPendGroup(label){
+  pendGroupSeq += 1;
+  return {id: 'pg' + pendGroupSeq, label: label, items: []};
+}
 
-<h1>Automação inteligente para Discord</h1>
+const state = {
+  counters: Object.fromEntries(COUNTERS.map(c => [c.key, 0])),
+  digital: [],
+  presencial: [],
+  pendGroups: [ newPendGroup('Solicitar comprovante de pagamento') ],
+};
 
-<p>
-Meu Bot foi desenvolvido para automatizar tarefas,
-gerenciar servidores e oferecer uma experiência segura
-e eficiente para todos os usuários.
-</p>
+function todayStr(){
+  const d = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+function toBR(isoDate){
+  const [y,m,d] = isoDate.split('-');
+  return `${d}/${m}/${y}`;
+}
 
-<a class="button" href="#">Adicionar ao Discord</a>
+function renderCounters(){
+  const el = document.getElementById('counters');
+  el.innerHTML = COUNTERS.map(c => `
+    <div class="counter">
+      <div class="label"><span class="emoji">${c.emoji}</span>${c.label}</div>
+      <div class="stepper">
+        <button type="button" onclick="step('${c.key}',-1)">–</button>
+        <input type="text" inputmode="numeric" id="cnt-${c.key}" value="${state.counters[c.key]}"
+          onchange="setCount('${c.key}', this.value)">
+        <button type="button" onclick="step('${c.key}',1)">+</button>
+      </div>
+    </div>
+  `).join('');
+}
+function step(key, delta){
+  state.counters[key] = Math.max(0, (state.counters[key]||0) + delta);
+  document.getElementById('cnt-'+key).value = state.counters[key];
+  updatePreview();
+}
+function setCount(key, val){
+  const n = parseInt(val.replace(/[^0-9]/g,''),10);
+  state.counters[key] = isNaN(n) ? 0 : Math.max(0,n);
+  document.getElementById('cnt-'+key).value = state.counters[key];
+  updatePreview();
+}
 
-</header>
+function renderChips(group){
+  const el = document.getElementById('chips-'+group);
+  el.innerHTML = state[group].map((item, i) => `
+    <span class="chip">${escapeHtml(item)}<button type="button" onclick="removeItem('${group}',${i})">✕</button></span>
+  `).join('') || `<span style="color:var(--muted);font-size:12px;">Nenhum item ainda.</span>`;
+}
+function addItem(group){
+  const input = document.getElementById('input-'+group);
+  const val = input.value.trim();
+  if(!val) return;
+  const exists = state[group].some(i => i.toLowerCase() === val.toLowerCase());
+  if(exists){
+    showToast('Esse item já está na lista.', false);
+    return;
+  }
+  state[group].push(val);
+  input.value = '';
+  renderChips(group);
+  updatePreview();
+  input.focus();
+}
+function removeItem(group, idx){
+  state[group].splice(idx,1);
+  renderChips(group);
+  updatePreview();
+}
+['digital','presencial'].forEach(g => {
+  document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('input-'+g);
+    input.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){ e.preventDefault(); addItem(g); }
+    });
+  });
+});
 
-<section>
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
 
-<div class="card">
+/* --- pendencia groups (multi-type) --- */
+function renderPendGroups(){
+  const el = document.getElementById('pendGroups');
+  el.innerHTML = state.pendGroups.map(g => `
+    <div class="pend-group" data-gid="${g.id}">
+      <div class="pend-group-head">
+        <input type="text" value="${escapeHtml(g.label)}" maxlength="60"
+          onchange="updatePendLabel('${g.id}', this.value)">
+        ${state.pendGroups.length > 1 ? `<button type="button" class="pend-remove" onclick="removePendGroup('${g.id}')">✕</button>` : ''}
+      </div>
+      <div class="chips" id="chips-${g.id}">
+        ${g.items.map((item,i) => `
+          <span class="chip">${escapeHtml(item)}<button type="button" onclick="removePendItem('${g.id}',${i})">✕</button></span>
+        `).join('') || `<span style="color:var(--muted);font-size:12px;">Nenhum nome ainda.</span>`}
+      </div>
+      <div class="add-row">
+        <input type="text" id="input-${g.id}" placeholder="Nome completo do aluno" maxlength="80">
+        <button type="button" onclick="addPendItem('${g.id}')">Adicionar</button>
+      </div>
+    </div>
+  `).join('');
 
-<h2>⚡ Rápido</h2>
+  state.pendGroups.forEach(g => {
+    const input = document.getElementById('input-'+g.id);
+    if(input){
+      input.addEventListener('keydown', e => {
+        if(e.key === 'Enter'){ e.preventDefault(); addPendItem(g.id); }
+      });
+    }
+  });
+}
+function findPendGroup(gid){
+  return state.pendGroups.find(g => g.id === gid);
+}
+function updatePendLabel(gid, val){
+  const g = findPendGroup(gid);
+  if(g) g.label = val.trim() || 'Pendência';
+  updatePreview();
+}
+function addPendItem(gid){
+  const input = document.getElementById('input-'+gid);
+  const val = input.value.trim();
+  if(!val) return;
+  const g = findPendGroup(gid);
+  const exists = g.items.some(i => i.toLowerCase() === val.toLowerCase());
+  if(exists){
+    showToast('Esse nome já está nessa pendência.', false);
+    return;
+  }
+  g.items.push(val);
+  input.value = '';
+  renderPendGroups();
+  updatePreview();
+  document.getElementById('input-'+gid).focus();
+}
+function removePendItem(gid, idx){
+  const g = findPendGroup(gid);
+  g.items.splice(idx,1);
+  renderPendGroups();
+  updatePreview();
+}
+function addPendGroup(){
+  state.pendGroups.push(newPendGroup('Nova pendência'));
+  renderPendGroups();
+  updatePreview();
+}
+function removePendGroup(gid){
+  if(state.pendGroups.length <= 1) return;
+  state.pendGroups = state.pendGroups.filter(g => g.id !== gid);
+  renderPendGroups();
+  updatePreview();
+}
 
-<p>Executa comandos em poucos milissegundos.</p>
+function buildMessage(){
+  const dateVal = document.getElementById('reportDate').value || todayStr();
+  const dateBR = toBR(dateVal);
+  const nome = document.getElementById('responsavelNome').value.trim();
+  const c = state.counters;
+  const obs = document.getElementById('observacoes').value.trim() || 'Sem observações.';
 
-</div>
+  const digitalLines = state.digital.length
+    ? state.digital.map(i => `* ${i}`).join('\n')
+    : '* Nenhuma';
+  const presencialLines = state.presencial.length
+    ? state.presencial.map(i => `* ${i}`).join('\n')
+    : '* Nenhuma';
 
-<div class="card">
+  const activeGroups = state.pendGroups.filter(g => g.items.length > 0);
+  const pendBlock = activeGroups.length
+    ? activeGroups.map(g => `${g.label}:\n${g.items.map(i => `* ${i}`).join('\n')}`).join('\n\n')
+    : 'Sem pendências.';
 
-<h2>🔒 Seguro</h2>
+  return `📊 **Fechamento do Dia – ${dateBR}**
+👤 Enviado por: ${nome || 'Não informado'}
 
-<p>Coletamos apenas os dados necessários para o funcionamento.</p>
+📤 Mensagens enviadas (ativos): ${c.enviadas}
+💬 Retornos: ${c.retornos}
+🤝 Acordos realizados: ${c.acordos}
+📄 Boletos enviados: ${c.boletos}
+💳 Pagamentos realizados: ${c.pagamentos}
+⚠️ Mensagens com erro: ${c.erros}
+❌ Cancelamentos: ${c.cancelamentos}
 
-</div>
+🎓 **Turmas atendidas**
+**Ensino Digital**
+${digitalLines}
+**Ensino Presencial**
+${presencialLines}
 
-<div class="card">
+📝 **Observações**
+${obs}
 
-<h2>🛠️ Sempre atualizado</h2>
+⏳ **Pendências**
+${pendBlock}`;
+}
 
-<p>Melhorias constantes e novas funcionalidades.</p>
+function buildReportData(){
+  const dateVal = document.getElementById('reportDate').value || todayStr();
+  const nome = document.getElementById('responsavelNome').value.trim();
+  const obs = document.getElementById('observacoes').value.trim();
+  const activeGroups = state.pendGroups.filter(g => g.items.length > 0);
+  return {
+    date: toBR(dateVal),
+    nome,
+    counters: {...state.counters},
+    digital: [...state.digital],
+    presencial: [...state.presencial],
+    obs,
+    pendGroups: activeGroups.map(g => ({label: g.label, items: [...g.items]})),
+  };
+}
 
-</div>
+function updatePreview(){
+  document.getElementById('preview').textContent = buildMessage();
+}
 
-</section>
+function showToast(msg, ok){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (ok ? 'ok' : 'err');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => { t.className = 'toast'; }, 6000);
+}
 
-<footer>
+function isReportEmpty(){
+  const c = state.counters;
+  const allZero = Object.values(c).every(v => v === 0);
+  const noTurmas = state.digital.length === 0 && state.presencial.length === 0;
+  const noPend = state.pendGroups.every(g => g.items.length === 0);
+  const obs = document.getElementById('observacoes').value.trim();
+  return allZero && noTurmas && noPend && !obs;
+}
 
-<p>© 2026 Meu Bot • Todos os direitos reservados.</p>
+const RECAPTCHA_SITE_KEY = '6Lfzf0stAAAAAHUrUvez7njP4kQ_RIY0DombQrUP';
 
-</footer>
+function getRecaptchaToken(){
+  return new Promise((resolve, reject) => {
+    if(typeof grecaptcha === 'undefined'){
+      reject(new Error('reCAPTCHA não carregou'));
+      return;
+    }
+    grecaptcha.ready(() => {
+      grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'send_report'})
+        .then(resolve)
+        .catch(reject);
+    });
+  });
+}
 
+async function sendReport(){
+  const nome = document.getElementById('responsavelNome').value.trim();
+  if(!nome || nome.length < 3){
+    showToast('Preencha seu nome completo antes de enviar.', false);
+    document.getElementById('responsavelNome').focus();
+    return;
+  }
+  if(isReportEmpty()){
+    const confirmSend = window.confirm('Nenhum número, turma, observação ou pendência foi preenchido. Enviar mesmo assim?');
+    if(!confirmSend) return;
+  }
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+  try{
+    let recaptchaToken;
+    try{
+      recaptchaToken = await getRecaptchaToken();
+    }catch(e){
+      showToast('Não foi possível validar segurança (reCAPTCHA). Recarregue a página e tente de novo.', false);
+      btn.disabled = false;
+      btn.textContent = 'Enviar relatório';
+      return;
+    }
+    const res = await fetch('/api/send-report', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({...buildReportData(), recaptchaToken})
+    });
+    if(res.ok){
+      showToast('Relatório enviado para o Discord ✅', true);
+      historyLoaded = false;
+    } else if(res.status === 403){
+      showToast('Envio bloqueado por segurança (reCAPTCHA). Tente novamente.', false);
+    } else {
+      showToast(`Não foi possível enviar (status ${res.status}). Tente novamente em instantes.`, false);
+    }
+  }catch(err){
+    showToast('Não foi possível enviar. Verifique sua conexão.', false);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'Enviar relatório';
+  }
+}
+
+async function copyReport(){
+  try{
+    await navigator.clipboard.writeText(buildMessage());
+    showToast('Texto copiado para a área de transferência.', true);
+  }catch(err){
+    showToast('Não foi possível copiar automaticamente. Selecione o texto na pré-visualização.', false);
+  }
+}
+
+function formatHistoryDate(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleString('pt-BR', {dateStyle:'short', timeStyle:'short'});
+  }catch(e){ return iso; }
+}
+
+let historyLoaded = false;
+async function loadHistory(){
+  const pinInput = document.getElementById('historyPin');
+  const pin = pinInput.value.trim();
+  const el = document.getElementById('historyList');
+  if(!pin){
+    el.innerHTML = '<p style="font-size:12px;">Digite o PIN de acesso pra ver o histórico.</p>';
+    return;
+  }
+  el.textContent = 'Carregando…';
+  try{
+    const res = await fetch('/api/history?limit=20', {
+      headers: {'x-history-pin': pin}
+    });
+    if(res.status === 401){
+      el.innerHTML = '<p style="font-size:12px;color:var(--red);">PIN incorreto.</p>';
+      return;
+    }
+    const data = await res.json();
+    if(!data.configured){
+      el.innerHTML = '<p style="font-size:12px;">Histórico ainda não configurado no servidor. Fale com quem administra o site.</p>';
+      return;
+    }
+    if(!data.reports || data.reports.length === 0){
+      el.innerHTML = '<p style="font-size:12px;">Nenhum relatório enviado ainda.</p>';
+      historyLoaded = true;
+      return;
+    }
+    el.innerHTML = data.reports.map(r => `
+      <details class="history-entry">
+        <summary>
+          <span>👤 ${escapeHtml(r.nome || 'Não informado')}</span>
+          <span class="meta">${formatHistoryDate(r.sentAt)}</span>
+        </summary>
+        <pre>${escapeHtml(r.content || '')}</pre>
+      </details>
+    `).join('');
+    historyLoaded = true;
+  }catch(err){
+    el.innerHTML = '<p style="font-size:12px;color:var(--red);">Não foi possível carregar o histórico agora.</p>';
+  }
+}
+
+// init
+document.getElementById('reportDate').value = todayStr();
+renderCounters();
+renderChips('digital');
+renderChips('presencial');
+renderPendGroups();
+document.getElementById('observacoes').addEventListener('input', updatePreview);
+document.getElementById('reportDate').addEventListener('change', updatePreview);
+document.getElementById('responsavelNome').addEventListener('input', updatePreview);
+updatePreview();
+</script>
 </body>
 </html>
